@@ -1,0 +1,25 @@
+{
+  "presets": [
+    "@babel/preset-typescript",
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "root": ".",                                  
+      "alias": {
+        "@controllers": "./src/controllers/",
+        "@models": "./src/models/",
+        "@middlewares": "./src/middlewares/",
+        "@rootDir": "./",
+        "@src": "./src/"
+      }                  
+    }]
+  ]
+}
