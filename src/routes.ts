@@ -1,23 +1,31 @@
 import { Router } from 'express'
 import customerController from '@controllers/customerController'
 import userController from '@controllers/userController'
-import checkTokenMiddleware from '@middlewares/checkTokenMiddleware'
-const routes = Router()
+import isAuthenticated from '@middlewares/isAuthenticated'
+const rootRoute = Router()
+const userRoutes = Router()
+const customerRoutes = Router()
 
 // Root route
-routes.get('/', (req, res) => res.json({ message: 'Project Manager API with TS' }))
+rootRoute.get('/', (req, res) => res.json({
+  projectName: 'Project Manager API',
+  createdBy: 'Iury Veloso',
+  email: 'iurysveloso@gmail.com'
+}))
 
 // Users routes
-routes.get('/auth', checkTokenMiddleware, userController.get)
-routes.post('/auth', userController.create)
-routes.post('/auth/login', userController.login)
-routes.patch('/auth', checkTokenMiddleware, userController.update)
+userRoutes.get('/', isAuthenticated, userController.get)
+userRoutes.get('/check', isAuthenticated, userController.check)
+userRoutes.post('/', userController.create)
+userRoutes.post('/login', userController.login)
+userRoutes.get('/logout', userController.logout)
+userRoutes.patch('/', isAuthenticated, userController.update)
 
 // Customer routes
-routes.get('/customer', customerController.index)
-routes.get('/customer/:id', customerController.get)
-routes.post('/customer', customerController.create)
-routes.patch('/customer/:id', customerController.update)
-routes.delete('/customer/:id', customerController.delete)
+customerRoutes.get('/', isAuthenticated, customerController.index)
+customerRoutes.get('/:id', isAuthenticated, customerController.get)
+customerRoutes.post('/', isAuthenticated, customerController.create)
+customerRoutes.patch('/:id', isAuthenticated, customerController.update)
+customerRoutes.delete('/:id', isAuthenticated, customerController.delete)
 
-export default routes
+export default { rootRoute, userRoutes, customerRoutes }

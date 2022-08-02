@@ -2,11 +2,11 @@ import { Request, Response } from 'express'
 import Customer from '@models/Customer'
 
 interface CustomerInterface {
-    email: String
-    firstName: String
-    lastName: String
-    address: String
-    phone: String
+    email: string
+    firstName: string
+    lastName: string
+    address: string
+    phone: string
     birthDate: Date
 }
 
@@ -18,7 +18,6 @@ class CustomerController {
   public index = async (req: Request, res: Response) => {
     try {
       const customers = await Customer.find()
-
       res.status(200).json(customers)
     } catch (error) {
       console.log(error)
@@ -35,7 +34,6 @@ class CustomerController {
         res.status(422).json({ message: 'Cliente não encontrado!' })
         return
       }
-
       res.status(200).json(customer)
     } catch (error) {
       console.log(error)
@@ -118,7 +116,7 @@ class CustomerController {
       return
     }
 
-    const customer = {
+    const customer: CustomerInterface = {
       email,
       firstName,
       lastName,
@@ -152,7 +150,7 @@ class CustomerController {
 
       await Customer.deleteOne({ _id: id })
 
-      res.status(201).json({ message: 'Cliente removido com sucesso!' })
+      res.status(200).json({ message: 'Cliente removido com sucesso!' })
     } catch (error) {
       console.log(error)
       res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })

@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-const Customer = new Schema({
+const CustomerSchema = new Schema({
   email: String,
   firstName: String,
   lastName: String,
@@ -11,4 +11,4 @@ const Customer = new Schema({
   timestamps: true
 })
 
-export default model('Customer', Customer)
+export default model('Customer', CustomerSchema)
