@@ -33,6 +33,8 @@
       "@controllers/*": ["./src/controllers/*"],
       "@models/*": ["./src/models/*"],
       "@middlewares/*": ["./src/middlewares/*"],
+      "@functions/*": ["./src/functions/*"],
+      "@interfaces/*": ["./src/interfaces/*"],
       "@rootDir/*": ["./*"],
       "@src/*": ["./src/*"],
     },                                      /* Specify a set of entries that re-map imports to additional lookup locations. */

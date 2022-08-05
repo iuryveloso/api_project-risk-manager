@@ -1,72 +1,54 @@
 import { Request, Response } from 'express'
 import Customer from '@models/Customer'
-
-interface CustomerInterface {
-    email: string
-    firstName: string
-    lastName: string
-    address: string
-    phone: string
-    birthDate: Date
-}
-
-interface CustomerRequest extends Request {
-    body: CustomerInterface
-}
+import { CustomerInterface, CustomerRequest } from '@interfaces/customerInterfaces'
 
 class CustomerController {
-  public index = async (req: Request, res: Response) => {
+  public async index (req: Request, res: Response) {
     try {
       const customers = await Customer.find()
-      res.status(200).json(customers)
+      return res.status(200).json(customers)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
     }
   }
 
-  public get = async (req: Request, res: Response) => {
+  public async get (req: Request, res: Response) {
     const id = req.params.id
     try {
       const customer = await Customer.findOne({ _id: id })
 
       if (!customer) {
-        res.status(422).json({ message: 'Cliente não encontrado!' })
-        return
+        return res.status(422).json({ message: 'Cliente não encontrado!' })
       }
-      res.status(200).json(customer)
+
+      return res.status(200).json(customer)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
     }
   }
 
-  public create = async (req: CustomerRequest, res: Response) => {
+  public async create (req: CustomerRequest, res: Response) {
     const { email, firstName, lastName, address, phone, birthDate } = req.body
 
     if (!email) {
-      res.status(422).json({ error: 'O Email é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Email é obrigatório' })
     }
     if (!firstName) {
-      res.status(422).json({ error: 'O Nome é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Nome é obrigatório' })
     }
     if (!lastName) {
-      res.status(422).json({ error: 'O Sobrenome é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Sobrenome é obrigatório' })
     }
     if (!address) {
-      res.status(422).json({ error: 'O Endereço é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Endereço é obrigatório' })
     }
     if (!phone) {
-      res.status(422).json({ error: 'O Telefone é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Telefone é obrigatório' })
     }
     if (!birthDate) {
-      res.status(422).json({ error: 'a Data de Nascimento é obrigatório' })
-      return
+      return res.status(422).json({ error: 'a Data de Nascimento é obrigatório' })
     }
 
     const customer = new Customer({
@@ -80,40 +62,34 @@ class CustomerController {
 
     try {
       await Customer.create(customer)
-      res.status(201).json({ message: 'Cliente cadastrado com sucesso!' })
+      return res.status(201).json({ message: 'Cliente cadastrado com sucesso!' })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
     }
   }
 
-  public update = async (req: CustomerRequest, res: Response) => {
+  public async update (req: CustomerRequest, res: Response) {
     const id = req.params.id
     const { email, firstName, lastName, address, phone, birthDate } = req.body
 
     if (!email) {
-      res.status(422).json({ error: 'O Email é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Email é obrigatório' })
     }
     if (!firstName) {
-      res.status(422).json({ error: 'O Nome é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Nome é obrigatório' })
     }
     if (!lastName) {
-      res.status(422).json({ error: 'O Sobrenome é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Sobrenome é obrigatório' })
     }
     if (!address) {
-      res.status(422).json({ error: 'O Endereço é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Endereço é obrigatório' })
     }
     if (!phone) {
-      res.status(422).json({ error: 'O Telefone é obrigatório' })
-      return
+      return res.status(422).json({ error: 'O Telefone é obrigatório' })
     }
     if (!birthDate) {
-      res.status(422).json({ error: 'a Data de Nascimento é obrigatório' })
-      return
+      return res.status(422).json({ error: 'a Data de Nascimento é obrigatório' })
     }
 
     const customer: CustomerInterface = {
@@ -132,14 +108,14 @@ class CustomerController {
         return res.status(422).json({ message: 'Cliente não encontrado!' })
       }
 
-      res.status(201).json({ message: 'Cliente atualizado com sucesso!' })
+      return res.status(201).json({ message: 'Cliente atualizado com sucesso!' })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
     }
   }
 
-  public delete = async (req: Request, res: Response) => {
+  public async delete (req: Request, res: Response) {
     const id = req.params.id
     try {
       const customer = await Customer.findOne({ _id: id })
@@ -150,10 +126,10 @@ class CustomerController {
 
       await Customer.deleteOne({ _id: id })
 
-      res.status(200).json({ message: 'Cliente removido com sucesso!' })
+      return res.status(200).json({ message: 'Cliente removido com sucesso!' })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
     }
   }
 }

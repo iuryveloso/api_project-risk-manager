@@ -20,9 +20,10 @@ userRoutes.post('/', userController.create)
 userRoutes.post('/login', userController.login)
 userRoutes.get('/logout', userController.logout)
 userRoutes.patch('/', isAuthenticated, userController.update)
+userRoutes.patch('/password', isAuthenticated, userController.updatePassword)
 
 // Customer routes
-customerRoutes.get('/', isAuthenticated, customerController.index)
+customerRoutes.get('/', customerController.index)
 customerRoutes.get('/:id', isAuthenticated, customerController.get)
 customerRoutes.post('/', isAuthenticated, customerController.create)
 customerRoutes.patch('/:id', isAuthenticated, customerController.update)

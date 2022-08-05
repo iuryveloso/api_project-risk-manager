@@ -6,7 +6,7 @@ import session from 'express-session'
 import CookieParser from 'cookie-parser'
 import connectRedis from 'connect-redis'
 import routes from '@src/routes'
-import endpoints from '@rootDir/endpoints.config'
+import env from '@rootDir/env.config'
 
 class App {
   public express: express.Application
@@ -20,11 +20,11 @@ class App {
     this.routes()
   }
 
-  private middlewares = (): void => {
+  private middlewares () {
     this.express.use(express.json())
     this.express.use(cors(
       {
-        origin: endpoints.corsOrigin,
+        origin: env.corsOrigin,
         optionsSuccessStatus: 200,
         methods: 'GET,HEAD,PATCH,POST,DELETE'
       }
@@ -32,33 +32,33 @@ class App {
     this.express.use(CookieParser())
   }
 
-  private database = (): void => {
-    connect(`mongodb://${endpoints.mongoUsername}:${endpoints.mongoPassword}@${endpoints.mongoHost}:${endpoints.mongoPort}/${endpoints.mongoDB}?authSource=admin`)
+  private database () {
+    connect(`mongodb://${env.mongoUsername}:${env.mongoPassword}@${env.mongoHost}:${env.mongoPort}/${env.mongoDB}?authSource=admin`)
       .then(() => {
-        console.log(`${endpoints.date} -> MongoDB Conectado!`)
+        console.log(`${env.date} -> MongoDB Conectado!`)
       }).catch((err) => console.log(err))
   }
 
-  private routes = (): void => {
+  private routes () {
     this.express.use(routes.rootRoute)
     this.express.use('/auth', routes.userRoutes)
     this.express.use('/customer', routes.customerRoutes)
   }
 
-  private session = (): void => {
+  private session () {
     const RedisStore = connectRedis(session)
     const redisClient = new Redis({
-      port: parseInt(endpoints.redisPort, 10),
-      host: endpoints.redisHost,
+      port: parseInt(env.redisPort, 10),
+      host: env.redisHost,
       username: 'default',
-      password: endpoints.redisPassword,
+      password: env.redisPassword,
       db: 0
     })
     this.express.use(
       session({
         store: new RedisStore({ client: redisClient }),
         saveUninitialized: true,
-        secret: endpoints.redisSecret,
+        secret: env.redisSecret,
         cookie: {
           sameSite: 'strict',
           httpOnly: true
