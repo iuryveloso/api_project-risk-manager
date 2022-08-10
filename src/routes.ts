@@ -2,9 +2,11 @@ import { Router } from 'express'
 import customerController from '@controllers/customerController'
 import userController from '@controllers/userController'
 import isAuthenticated from '@middlewares/isAuthenticated'
+import themeController from '@controllers/themeController'
 const rootRoute = Router()
 const userRoutes = Router()
 const customerRoutes = Router()
+const themeRoutes = Router()
 
 // Root route
 rootRoute.get('/', (req, res) => res.json({
@@ -23,10 +25,14 @@ userRoutes.patch('/', isAuthenticated, userController.update)
 userRoutes.patch('/password', isAuthenticated, userController.updatePassword)
 
 // Customer routes
-customerRoutes.get('/', customerController.index)
-customerRoutes.get('/:id', isAuthenticated, customerController.get)
-customerRoutes.post('/', isAuthenticated, customerController.create)
-customerRoutes.patch('/:id', isAuthenticated, customerController.update)
-customerRoutes.delete('/:id', isAuthenticated, customerController.delete)
+customerRoutes.get('/', /* isAuthenticated, */ customerController.index)
+customerRoutes.get('/:id', /* isAuthenticated, */ customerController.get)
+customerRoutes.post('/', /* isAuthenticated, */ customerController.create)
+customerRoutes.patch('/:id', /* isAuthenticated, */ customerController.update)
+customerRoutes.delete('/:id', /* isAuthenticated, */ customerController.delete)
 
-export default { rootRoute, userRoutes, customerRoutes }
+// Theme routes
+themeRoutes.get('/', /* isAuthenticated, */ themeController.get)
+themeRoutes.post('/', /* isAuthenticated, */ themeController.set)
+
+export default { rootRoute, userRoutes, customerRoutes, themeRoutes }

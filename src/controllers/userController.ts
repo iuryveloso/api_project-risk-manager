@@ -2,19 +2,18 @@ import { Request, Response } from 'express'
 import { genSalt, hash, compare } from 'bcrypt'
 import User from '@models/User'
 import { UserInterface, UserRequest } from '@interfaces/userInterfaces'
-import { saveToken, saveUserOnSession } from '@functions/userFunctions'
+import { getUserOnSession, saveToken, saveUserOnSession } from '@functions/userFunctions'
 
 class UserController {
   public async get (req: UserRequest, res: Response) {
-    const id = req.verifiedUserID
     try {
-      const user = await User.findById(id).select('firstName lastName avatar email -_id')
+      const user = getUserOnSession(req.session)
 
       if (!user) {
         return res.status(422).json({ message: 'Usuário não encontrado!' })
       }
 
-      return res.status(200).json({ message: 'Usuário Encontrado!', user })
+      return res.status(200).json(user)
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })

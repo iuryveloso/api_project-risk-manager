@@ -6,7 +6,7 @@ const CustomerSchema = new Schema({
   lastName: String,
   address: String,
   phone: String,
-  birthDate: Date
+  birthDate: String
 }, {
   timestamps: true
 })

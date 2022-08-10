@@ -25,3 +25,12 @@ export function saveUserOnSession (user: UserInterface, sessionUser: SessionUser
   sessionUser.avatar = user.avatar
   sessionUser.email = user.email
 }
+export function getUserOnSession (sessionUser: SessionUserInterface) {
+  const user: UserInterface = {
+    firstName: sessionUser.firstName,
+    lastName: sessionUser.lastName,
+    avatar: sessionUser.avatar,
+    email: sessionUser.email
+  }
+  return user
+}

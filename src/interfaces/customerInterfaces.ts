@@ -6,7 +6,7 @@ export interface CustomerInterface {
     lastName: string
     address: string
     phone: string
-    birthDate: Date
+    birthDate: string
 }
 
 export interface CustomerRequest extends Request {

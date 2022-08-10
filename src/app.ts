@@ -26,7 +26,8 @@ class App {
       {
         origin: env.corsOrigin,
         optionsSuccessStatus: 200,
-        methods: 'GET,HEAD,PATCH,POST,DELETE'
+        methods: 'GET,HEAD,PATCH,POST,DELETE',
+        credentials: true
       }
     ))
     this.express.use(CookieParser())
@@ -43,6 +44,7 @@ class App {
     this.express.use(routes.rootRoute)
     this.express.use('/auth', routes.userRoutes)
     this.express.use('/customer', routes.customerRoutes)
+    this.express.use('/theme', routes.themeRoutes)
   }
 
   private session () {
