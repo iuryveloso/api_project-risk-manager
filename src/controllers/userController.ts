@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { genSalt, hash, compare } from 'bcrypt'
+import fileSystem from 'fs-extra'
 import User from '@models/User'
 import { UserInterface, UserRequest } from '@interfaces/userInterfaces'
 import { getUserOnSession, saveToken, saveUserOnSession } from '@functions/userFunctions'
@@ -44,33 +45,48 @@ class UserController {
   }
 
   public async create (req: UserRequest, res: Response) {
-    const { email, firstName, lastName, avatar, password, confirmPassword } = req.body
+    const { email, firstName, lastName, password, confirmPassword } = req.body
+    const avatar = req.file?.filename
+    const AvatarError = req.avatarError
     const userExists = await User.findOne({ email })
     const salt = await genSalt(12)
+    function removeImage () {
+      fileSystem.remove(`./uploads/${avatar}`)
+        .catch(err => console.error(err))
+    }
+    if (!avatar) {
+      return res.status(422).json({ error: 'A Imagem de perfil é obrigatória' })
+    }
+    if (AvatarError) {
+      return res.status(422).json({ error: AvatarError })
+    }
     if (!firstName) {
+      removeImage()
       return res.status(422).json({ error: 'O Nome é obrigatório' })
     }
     if (!lastName) {
+      removeImage()
       return res.status(422).json({ error: 'O Sobrenome é obrigatório' })
     }
     if (!email) {
+      removeImage()
       return res.status(422).json({ error: 'O Email é obrigatório' })
     }
-    if (!avatar) {
-      return res.status(422).json({ error: 'O Avatar é obrigatório' })
-    }
-    if (!password) {
-      return res.status(422).json({ error: 'A Senha é obrigatória' })
-    }
-    if (confirmPassword !== password) {
-      return res.status(422).json({ error: 'As Senhas não conferem' })
-    }
-
     if (userExists) {
+      removeImage()
       return res.status(422).json({ error: 'Email já cadastrado!' })
     }
 
-    const passwordHash = await hash(password, salt)
+    if (!password) {
+      removeImage()
+      return res.status(422).json({ error: 'A Senha é obrigatória' })
+    }
+    if (confirmPassword !== password) {
+      removeImage()
+      return res.status(422).json({ error: 'As Senhas não conferem' })
+    }
+
+    const passwordHash = await hash(password as string, salt)
     const user = new User({
       email,
       firstName,

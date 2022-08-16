@@ -22,5 +22,7 @@ export interface SessionUserInterface extends Session {
 export interface UserRequest extends Request {
     body: UserInterface
     verifiedUserID?: string
+    avatarError?: string
+    userError?: string
     session: SessionUserInterface
 }

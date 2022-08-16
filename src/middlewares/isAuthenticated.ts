@@ -8,7 +8,7 @@ interface IsAuthenticatedRequest extends Request {
 
 export default function isAuthenticated (req: IsAuthenticatedRequest, res: Response, next: NextFunction) {
   const token = req.cookies.Jwt
-
+  console.log(req.body)
   if (!token) {
     return res.status(401).json({ message: 'Acesso negado!' })
   }

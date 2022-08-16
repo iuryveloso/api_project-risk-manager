@@ -3,6 +3,8 @@ import customerController from '@controllers/customerController'
 import userController from '@controllers/userController'
 import isAuthenticated from '@middlewares/isAuthenticated'
 import themeController from '@controllers/themeController'
+import UploadFile from '@middlewares/uploadFile'
+const upload = UploadFile()
 const rootRoute = Router()
 const userRoutes = Router()
 const customerRoutes = Router()
@@ -18,7 +20,7 @@ rootRoute.get('/', (req, res) => res.json({
 // Users routes
 userRoutes.get('/', isAuthenticated, userController.get)
 userRoutes.get('/check', isAuthenticated, userController.check)
-userRoutes.post('/', userController.create)
+userRoutes.post('/', upload.single('avatar'), userController.create)
 userRoutes.post('/login', userController.login)
 userRoutes.get('/logout', userController.logout)
 userRoutes.patch('/', isAuthenticated, userController.update)
