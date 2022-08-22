@@ -20,10 +20,18 @@ export function saveToken (userID: string, res: Response) {
 }
 
 export function saveUserOnSession (user: UserInterface, sessionUser: SessionUserInterface) {
-  sessionUser.firstName = user.firstName
-  sessionUser.lastName = user.lastName
-  sessionUser.avatar = user.avatar
-  sessionUser.email = user.email
+  if (user.firstName) {
+    sessionUser.firstName = user.firstName
+  }
+  if (user.lastName) {
+    sessionUser.lastName = user.lastName
+  }
+  if (user.avatar) {
+    sessionUser.avatar = user.avatar
+  }
+  if (user.email) {
+    sessionUser.email = user.email
+  }
 }
 export function getUserOnSession (sessionUser: SessionUserInterface) {
   const user: UserInterface = {

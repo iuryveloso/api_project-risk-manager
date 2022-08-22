@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { genSalt, hash, compare } from 'bcrypt'
 import fileSystem from 'fs-extra'
+import { PassThrough, pipeline } from 'stream'
 import User from '@models/User'
 import { UserInterface, UserRequest } from '@interfaces/userInterfaces'
 import { getUserOnSession, saveToken, saveUserOnSession } from '@functions/userFunctions'
@@ -9,12 +10,36 @@ class UserController {
   public async get (req: UserRequest, res: Response) {
     try {
       const user = getUserOnSession(req.session)
-
       if (!user) {
         return res.status(422).json({ message: 'Usuário não encontrado!' })
       }
 
-      return res.status(200).json(user)
+      const { avatar, ...userWithoutAvatar } = user
+
+      return res.status(200).json(userWithoutAvatar)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
+  public async getAvatar (req: UserRequest, res: Response) {
+    try {
+      const user = getUserOnSession(req.session)
+
+      if (user.avatar) {
+        const readStream = fileSystem.createReadStream(`./uploads/${user.avatar}`)
+        const passThrough = new PassThrough()
+        pipeline(readStream, passThrough, (error) => {
+          if (error) {
+            console.log(error)
+            return res.status(422)
+          }
+        })
+        passThrough.pipe(res)
+      } else {
+        return res.status(422)
+      }
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
@@ -152,7 +177,7 @@ class UserController {
   }
 
   public async update (req: UserRequest, res: Response) {
-    const { email, firstName, lastName, avatar } = req.body
+    const { email, firstName, lastName } = req.body
     const id = req.verifiedUserID
     if (!email) {
       return res.status(422).json({ error: 'O Email é obrigatório' })
@@ -163,9 +188,6 @@ class UserController {
     if (!lastName) {
       return res.status(422).json({ error: 'O Sobrenome é obrigatório' })
     }
-    if (!avatar) {
-      return res.status(422).json({ error: 'O Avatar é obrigatório' })
-    }
     const emailAlreadyExists = await User.findOne({ email })
     const emailAlreadyExistsId = emailAlreadyExists?._id.toString()
     if (emailAlreadyExists && emailAlreadyExistsId !== id) {
@@ -175,8 +197,7 @@ class UserController {
     const user: UserInterface = {
       email,
       firstName,
-      lastName,
-      avatar
+      lastName
     }
 
     try {
@@ -189,6 +210,45 @@ class UserController {
       saveUserOnSession(user, req.session)
 
       return res.status(201).json({ message: 'Usuário atualizado com sucesso!' })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
+  public async updateAvatar (req: UserRequest, res: Response) {
+    const avatar = req.file?.filename
+    const AvatarError = req.avatarError
+    const id = req.verifiedUserID
+    function removeImage (avatarname: string) {
+      fileSystem.remove(`./uploads/${avatarname}`)
+        .catch(err => console.error(err))
+    }
+
+    if (!avatar) {
+      return res.status(422).json({ error: 'A Imagem de perfil é obrigatória' })
+    }
+    if (AvatarError) {
+      return res.status(422).json({ error: AvatarError })
+    }
+
+    const user = await User.findById(id)
+    if (user?.avatar) {
+      removeImage(user?.avatar)
+    }
+
+    const newUser: UserInterface = { avatar }
+
+    try {
+      const updatedUser = await User.updateOne({ _id: id }, newUser)
+
+      if (updatedUser.matchedCount === 0) {
+        return res.status(422).json({ error: 'Usuário não encontrado!' })
+      }
+
+      saveUserOnSession(newUser, req.session)
+
+      return res.status(201).json({ message: 'Imagem de perfil alterada com sucesso!' })
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })

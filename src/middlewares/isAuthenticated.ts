@@ -1,21 +1,26 @@
 import { Request, Response, NextFunction } from 'express'
-import { verify } from 'jsonwebtoken'
+import { JwtPayload, verify } from 'jsonwebtoken'
 import env from '@rootDir/env.config'
 
 interface IsAuthenticatedRequest extends Request {
     verifiedUserID?: string
 }
 
+interface DecodedInterface extends JwtPayload {
+  userID?: string
+}
+
 export default function isAuthenticated (req: IsAuthenticatedRequest, res: Response, next: NextFunction) {
   const token = req.cookies.Jwt
-  console.log(req.body)
   if (!token) {
     return res.status(401).json({ message: 'Acesso negado!' })
   }
   try {
     const secret = env.jwtSecret
-    const decoded = verify(token, secret)
-    req.verifiedUserID = (<any>decoded).userID
+    const decoded: string | DecodedInterface = verify(token, secret)
+    if (typeof decoded !== 'string') {
+      req.verifiedUserID = decoded.userID
+    }
     next()
   } catch (error) {
     console.log(error)

@@ -19,22 +19,24 @@ rootRoute.get('/', (req, res) => res.json({
 
 // Users routes
 userRoutes.get('/', isAuthenticated, userController.get)
+userRoutes.get('/avatar', isAuthenticated, userController.getAvatar)
 userRoutes.get('/check', isAuthenticated, userController.check)
 userRoutes.post('/', upload.single('avatar'), userController.create)
 userRoutes.post('/login', userController.login)
-userRoutes.get('/logout', userController.logout)
+userRoutes.get('/logout', isAuthenticated, userController.logout)
 userRoutes.patch('/', isAuthenticated, userController.update)
+userRoutes.patch('/avatar', [isAuthenticated, upload.single('avatar')], userController.updateAvatar)
 userRoutes.patch('/password', isAuthenticated, userController.updatePassword)
 
 // Customer routes
-customerRoutes.get('/', /* isAuthenticated, */ customerController.index)
-customerRoutes.get('/:id', /* isAuthenticated, */ customerController.get)
-customerRoutes.post('/', /* isAuthenticated, */ customerController.create)
-customerRoutes.patch('/:id', /* isAuthenticated, */ customerController.update)
-customerRoutes.delete('/:id', /* isAuthenticated, */ customerController.delete)
+customerRoutes.get('/', isAuthenticated, customerController.index)
+customerRoutes.get('/:id', isAuthenticated, customerController.get)
+customerRoutes.post('/', isAuthenticated, customerController.create)
+customerRoutes.patch('/:id', isAuthenticated, customerController.update)
+customerRoutes.delete('/:id', isAuthenticated, customerController.delete)
 
 // Theme routes
-themeRoutes.get('/', /* isAuthenticated, */ themeController.get)
-themeRoutes.post('/', /* isAuthenticated, */ themeController.set)
+themeRoutes.get('/', isAuthenticated, themeController.get)
+themeRoutes.post('/', isAuthenticated, themeController.set)
 
 export default { rootRoute, userRoutes, customerRoutes, themeRoutes }
