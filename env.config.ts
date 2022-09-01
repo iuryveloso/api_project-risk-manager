@@ -15,5 +15,8 @@ export default {
   jwtSecret: process.env.SECRET as string,
   jwtSecure: process.env.SECURE as string,
   corsOrigin: process.env.CORS_ORIGIN as string,
-  date: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+  date: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+  googleClientId: process.env.OAUTH_GOOGLE_CLIENT_ID as string,
+  googleClientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET_KEY as string,
+  googleRedirectUri: process.env.OAUTH_GOOGLE_REDIRECT_URL as string
 }

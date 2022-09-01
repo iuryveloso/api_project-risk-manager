@@ -5,7 +5,10 @@ import { CustomerInterface, CustomerRequest } from '@interfaces/customerInterfac
 class CustomerController {
   public async index (req: Request, res: Response) {
     try {
-      const customers = await Customer.find()
+      const customers = await Customer.find().sort({ firstName: 'asc' }).collation({
+        caseLevel: true,
+        locale: 'pt'
+      })
       return res.status(200).json(customers)
     } catch (error) {
       console.log(error)

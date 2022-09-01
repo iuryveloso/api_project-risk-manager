@@ -4,6 +4,7 @@ import userController from '@controllers/userController'
 import isAuthenticated from '@middlewares/isAuthenticated'
 import themeController from '@controllers/themeController'
 import UploadFile from '@middlewares/uploadFile'
+
 const upload = UploadFile()
 const rootRoute = Router()
 const userRoutes = Router()
@@ -16,6 +17,9 @@ rootRoute.get('/', (req, res) => res.json({
   createdBy: 'Iury Veloso',
   email: 'iurysveloso@gmail.com'
 }))
+
+// OAuth Router
+userRoutes.get('/google', userController.google)
 
 // Users routes
 userRoutes.get('/', isAuthenticated, userController.get)

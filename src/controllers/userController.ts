@@ -1,22 +1,28 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { genSalt, hash, compare } from 'bcrypt'
 import fileSystem from 'fs-extra'
 import { PassThrough, pipeline } from 'stream'
 import User from '@models/User'
 import { UserInterface, UserRequest } from '@interfaces/userInterfaces'
-import { getUserOnSession, saveToken, saveUserOnSession } from '@functions/userFunctions'
+import {
+  getGoogleOAuthTokens,
+  getGoogleUser,
+  getUserOnSession,
+  saveToken,
+  saveUserOnSession,
+  downloadAvatarImageFromGoogle
+} from '@functions/userFunctions'
+import env from '@rootDir/env.config'
 
 class UserController {
   public async get (req: UserRequest, res: Response) {
     try {
       const user = getUserOnSession(req.session)
       if (!user) {
-        return res.status(422).json({ message: 'Usuário não encontrado!' })
+        return res.status(422).json({ error: 'Usuário não encontrado!' })
       }
 
-      const { avatar, ...userWithoutAvatar } = user
-
-      return res.status(200).json(userWithoutAvatar)
+      return res.status(200).json(user)
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
@@ -24,10 +30,11 @@ class UserController {
   }
 
   public async getAvatar (req: UserRequest, res: Response) {
+    const id = req.verifiedUserID
     try {
-      const user = getUserOnSession(req.session)
+      const user = await User.findById(id).select('avatar -_id')
 
-      if (user.avatar) {
+      if (user?.avatar) {
         const readStream = fileSystem.createReadStream(`./uploads/${user.avatar}`)
         const passThrough = new PassThrough()
         pipeline(readStream, passThrough, (error) => {
@@ -52,13 +59,13 @@ class UserController {
       const user = await User.findById(id).select('firstName lastName avatar email -_id')
 
       if (!user) {
-        return res.status(422).json({ message: 'Usuário não encontrado!' })
+        return res.status(422).json({ error: 'Usuário não encontrado!' })
       }
       const userInteface: UserInterface = {
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        avatar: user.avatar
+        email: user.email as string,
+        firstName: user.firstName as string,
+        lastName: user.lastName as string,
+        avatar: user.avatar as string
       }
       saveUserOnSession(userInteface, req.session)
 
@@ -118,8 +125,8 @@ class UserController {
       lastName,
       avatar,
       password: passwordHash
-    })
 
+    })
     try {
       await user.save()
 
@@ -153,11 +160,9 @@ class UserController {
     if (!checkPassword) {
       return res.status(422).json({ error: 'Os dados estão incorretos ou o usuário não está cadastrado!' })
     }
-
     try {
       req.session.destroy((err) => err)
       saveToken(user?._id.toString(), res)
-
       return res.status(200).json({ message: 'Autenticação realizada com sucesso!' })
     } catch (error) {
       console.log(error)
@@ -165,7 +170,43 @@ class UserController {
     }
   }
 
-  public async logout (req: Request, res: Response) {
+  public async google (req: UserRequest, res: Response) {
+    const code = req.query.code as string
+    try {
+      const googleToken = await getGoogleOAuthTokens(code)
+      if (googleToken) {
+        const idToken = googleToken.id_token
+        const accessToken = googleToken.access_token
+        const googleUser = await getGoogleUser(idToken, accessToken)
+        if (googleUser) {
+          const userExists = await User.findOne({ email: googleUser.email })
+          if (userExists) {
+            req.session.destroy(err => err)
+            saveToken(userExists._id.toString(), res)
+          } else {
+            const filepath = './uploads/'
+            const getImageDownloaded = await downloadAvatarImageFromGoogle(googleUser.picture, filepath)
+            const ImageDownloaded = `${getImageDownloaded}`.split('/')
+            const user = new User({
+              email: googleUser.email,
+              firstName: googleUser.given_name,
+              lastName: googleUser.family_name,
+              avatar: ImageDownloaded[1]
+            })
+            await user.save()
+
+            req.session.destroy(err => err)
+            saveToken(user?._id.toString(), res)
+          }
+          return res.redirect(env.corsOrigin)
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  public async logout (req: UserRequest, res: Response) {
     try {
       res.clearCookie('Jwt')
       req.session.destroy(err => err)
@@ -204,7 +245,7 @@ class UserController {
       const updatedUser = await User.updateOne({ _id: id }, user)
 
       if (updatedUser.matchedCount === 0) {
-        return res.status(422).json({ message: 'Usuário não encontrado!' })
+        return res.status(422).json({ error: 'Usuário não encontrado!' })
       }
 
       saveUserOnSession(user, req.session)
@@ -265,7 +306,7 @@ class UserController {
       return res.status(422).json({ error: 'Usuario não encontrado!' })
     }
 
-    if (!password) {
+    if (!password && user.password) {
       return res.status(422).json({ error: 'A senha é obrigatória' })
     }
 
@@ -276,10 +317,11 @@ class UserController {
     if (newPassword !== confirmPassword) {
       return res.status(422).json({ error: 'As Senhas não conferem' })
     }
-
-    const checkPassword = await compare(password, user.password as string)
-    if (!checkPassword) {
-      return res.status(422).json({ error: 'Os dados estão incorretos ou o usuário não está cadastrado!' })
+    if (password) {
+      const checkPassword = await compare(password, user.password as string)
+      if (!checkPassword) {
+        return res.status(422).json({ error: 'Os dados estão incorretos ou o usuário não está cadastrado!' })
+      }
     }
 
     const passwordHash = await hash(newPassword, salt)
@@ -291,7 +333,7 @@ class UserController {
       const updatedUser = await User.updateOne({ _id: id }, userWithNewPassword)
 
       if (updatedUser.matchedCount === 0) {
-        return res.status(422).json({ message: 'Usuário não encontrado!' })
+        return res.status(422).json({ error: 'Usuário não encontrado!' })
       }
 
       return res.status(201).json({ message: 'Usuário atualizado com sucesso!' })

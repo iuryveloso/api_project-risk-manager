@@ -5,7 +5,7 @@ class ThemeController {
   public get (req: ThemeRequest, res: Response) {
     const theme = req.session.theme
     if (!theme) {
-      return res.status(422).json({ message: 'Tema não encontrado!' })
+      return res.status(200).json({ theme: 'dark' })
     }
 
     return res.status(200).json({ theme })
