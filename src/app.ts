@@ -42,7 +42,8 @@ class App {
 
   private routes () {
     this.express.use(routes.rootRoute)
-    this.express.use('/auth', routes.userRoutes)
+    this.express.use('/auth', routes.authRoutes)
+    this.express.use('/user', routes.userRoutes)
     this.express.use('/customer', routes.customerRoutes)
     this.express.use('/theme', routes.themeRoutes)
   }

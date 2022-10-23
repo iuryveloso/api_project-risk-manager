@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import customerController from '@controllers/customerController'
+import authController from '@controllers/authController'
 import userController from '@controllers/userController'
 import isAuthenticated from '@middlewares/isAuthenticated'
 import themeController from '@controllers/themeController'
@@ -7,6 +8,7 @@ import UploadFile from '@middlewares/uploadFile'
 
 const upload = UploadFile()
 const rootRoute = Router()
+const authRoutes = Router()
 const userRoutes = Router()
 const customerRoutes = Router()
 const themeRoutes = Router()
@@ -19,15 +21,15 @@ rootRoute.get('/', (req, res) => res.json({
 }))
 
 // OAuth Router
-userRoutes.get('/google', userController.google)
+authRoutes.get('/google', authController.google)
+authRoutes.get('/check', isAuthenticated, authController.check)
+authRoutes.post('/', upload.single('avatar'), authController.create)
+authRoutes.post('/login', authController.login)
+authRoutes.get('/logout', isAuthenticated, authController.logout)
 
 // Users routes
 userRoutes.get('/', isAuthenticated, userController.get)
 userRoutes.get('/avatar', isAuthenticated, userController.getAvatar)
-userRoutes.get('/check', isAuthenticated, userController.check)
-userRoutes.post('/', upload.single('avatar'), userController.create)
-userRoutes.post('/login', userController.login)
-userRoutes.get('/logout', isAuthenticated, userController.logout)
 userRoutes.patch('/', isAuthenticated, userController.update)
 userRoutes.patch('/avatar', [isAuthenticated, upload.single('avatar')], userController.updateAvatar)
 userRoutes.patch('/password', isAuthenticated, userController.updatePassword)
@@ -43,4 +45,4 @@ customerRoutes.delete('/:id', isAuthenticated, customerController.delete)
 themeRoutes.get('/', isAuthenticated, themeController.get)
 themeRoutes.post('/', isAuthenticated, themeController.set)
 
-export default { rootRoute, userRoutes, customerRoutes, themeRoutes }
+export default { rootRoute, authRoutes, userRoutes, customerRoutes, themeRoutes }
