@@ -35,25 +35,6 @@ class CustomerController {
   public async create (req: CustomerRequest, res: Response) {
     const { email, firstName, lastName, address, phone, birthDate } = req.body
 
-    if (!email) {
-      return res.status(422).json({ error: 'O Email é obrigatório' })
-    }
-    if (!firstName) {
-      return res.status(422).json({ error: 'O Nome é obrigatório' })
-    }
-    if (!lastName) {
-      return res.status(422).json({ error: 'O Sobrenome é obrigatório' })
-    }
-    if (!address) {
-      return res.status(422).json({ error: 'O Endereço é obrigatório' })
-    }
-    if (!phone) {
-      return res.status(422).json({ error: 'O Telefone é obrigatório' })
-    }
-    if (!birthDate) {
-      return res.status(422).json({ error: 'a Data de Nascimento é obrigatório' })
-    }
-
     const customer = new Customer({
       email,
       firstName,
@@ -75,25 +56,6 @@ class CustomerController {
   public async update (req: CustomerRequest, res: Response) {
     const id = req.params.id
     const { email, firstName, lastName, address, phone, birthDate } = req.body
-
-    if (!email) {
-      return res.status(422).json({ error: 'O Email é obrigatório' })
-    }
-    if (!firstName) {
-      return res.status(422).json({ error: 'O Nome é obrigatório' })
-    }
-    if (!lastName) {
-      return res.status(422).json({ error: 'O Sobrenome é obrigatório' })
-    }
-    if (!address) {
-      return res.status(422).json({ error: 'O Endereço é obrigatório' })
-    }
-    if (!phone) {
-      return res.status(422).json({ error: 'O Telefone é obrigatório' })
-    }
-    if (!birthDate) {
-      return res.status(422).json({ error: 'a Data de Nascimento é obrigatório' })
-    }
 
     const customer: CustomerInterface = {
       email,

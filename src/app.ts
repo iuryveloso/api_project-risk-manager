@@ -1,10 +1,8 @@
 import express from 'express'
 import { connect } from 'mongoose'
 import cors from 'cors'
-import Redis from 'ioredis'
 import session from 'express-session'
 import CookieParser from 'cookie-parser'
-import connectRedis from 'connect-redis'
 import routes from '@src/routes'
 import env from '@rootDir/env.config'
 
@@ -40,28 +38,11 @@ class App {
       }).catch((err) => console.log(err))
   }
 
-  private routes () {
-    this.express.use(routes.rootRoute)
-    this.express.use('/auth', routes.authRoutes)
-    this.express.use('/user', routes.userRoutes)
-    this.express.use('/customer', routes.customerRoutes)
-    this.express.use('/theme', routes.themeRoutes)
-  }
-
   private session () {
-    const RedisStore = connectRedis(session)
-    const redisClient = new Redis({
-      port: parseInt(env.redisPort, 10),
-      host: env.redisHost,
-      username: 'default',
-      password: env.redisPassword,
-      db: 0
-    })
     this.express.use(
       session({
-        store: new RedisStore({ client: redisClient }),
         saveUninitialized: true,
-        secret: env.redisSecret,
+        secret: env.expressSessionSecret,
         cookie: {
           sameSite: 'strict',
           httpOnly: true
@@ -69,6 +50,13 @@ class App {
         resave: true
       })
     )
+  }
+
+  private routes () {
+    this.express.use(routes.rootRoute)
+    this.express.use('/auth', routes.authRoutes)
+    this.express.use('/user', routes.userRoutes)
+    this.express.use('/customer', routes.customerRoutes)
   }
 }
 

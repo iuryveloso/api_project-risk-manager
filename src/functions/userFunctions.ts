@@ -3,7 +3,6 @@ import { sign } from 'jsonwebtoken'
 import QueryString from 'qs'
 import axios from 'axios'
 import fileSystem from 'fs-extra'
-import { UserInterface, SessionUserInterface } from '@interfaces/userInterfaces'
 import env from '@rootDir/env.config'
 import path from 'path'
 import { randomUUID } from 'crypto'
@@ -40,30 +39,6 @@ export function saveToken (userID: string, res: Response) {
     sameSite: 'strict',
     path: '/'
   })
-}
-
-export function saveUserOnSession (user: UserInterface, sessionUser: SessionUserInterface) {
-  if (user.firstName) {
-    sessionUser.firstName = user.firstName
-  }
-  if (user.lastName) {
-    sessionUser.lastName = user.lastName
-  }
-  if (user.avatar) {
-    sessionUser.avatar = user.avatar
-  }
-  if (user.email) {
-    sessionUser.email = user.email
-  }
-}
-export function getUserOnSession (sessionUser: SessionUserInterface) {
-  const user: UserInterface = {
-    firstName: sessionUser.firstName as string,
-    lastName: sessionUser.lastName as string,
-    avatar: sessionUser.avatar as string,
-    email: sessionUser.email as string
-  }
-  return user
 }
 
 export async function getGoogleOAuthTokens (code: string): Promise<GoogleOAuthTokensInterface | undefined> {
@@ -133,4 +108,9 @@ export async function downloadAvatarImageFromGoogle (url: string, filepath: stri
       .on('error', reject)
       .once('close', () => resolve(filePathWithfilename))
   })
+}
+
+export function removeImage (avatar: string) {
+  fileSystem.remove(`./uploads/${avatar}`)
+    .catch(err => console.error(err))
 }
