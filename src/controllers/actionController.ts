@@ -1,35 +1,37 @@
 import { Request, Response } from 'express'
-import Customer from '@models/Customer'
-import { CustomerInterface, CustomerRequest } from '@interfaces/customerInterfaces'
+import Action from '@models/Action'
+import { ActionInterface, ActionRequest } from '@interfaces/actionInterfaces'
 
-class CustomerController {
+class ActionController {
   public async list (req: Request, res: Response) {
+    const riskID = req.params.riskID
     try {
-      const customers = await Customer.find().sort({ firstName: 'asc' }).collation({
+      const actions = await Action.find({ riskID }).sort({ firstName: 'asc' }).collation({
         caseLevel: true,
         locale: 'pt'
       })
-      return res.status(200).json(customers)
+      return res.status(200).json(actions)
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
     }
   }
 
-  public async create (req: CustomerRequest, res: Response) {
-    const { email, firstName, lastName, address, phone, birthDate } = req.body
+  public async create (req: ActionRequest, res: Response) {
+    const { title, description, type, responsible, status, observation, riskID } = req.body
 
-    const customer = new Customer({
-      email,
-      firstName,
-      lastName,
-      address,
-      phone,
-      birthDate
+    const action = new Action({
+      title,
+      description,
+      type,
+      responsible,
+      status,
+      observation,
+      riskID
     })
 
     try {
-      await Customer.create(customer)
+      await Action.create(action)
       return res.status(201).json({ message: 'Cliente cadastrado com sucesso!' })
     } catch (error) {
       console.log(error)
@@ -37,23 +39,24 @@ class CustomerController {
     }
   }
 
-  public async update (req: CustomerRequest, res: Response) {
+  public async update (req: ActionRequest, res: Response) {
     const id = req.params.id
-    const { email, firstName, lastName, address, phone, birthDate } = req.body
+    const { title, description, type, responsible, status, observation, riskID } = req.body
 
-    const customer: CustomerInterface = {
-      email,
-      firstName,
-      lastName,
-      address,
-      phone,
-      birthDate
+    const action: ActionInterface = {
+      title,
+      description,
+      type,
+      responsible,
+      status,
+      observation,
+      riskID
     }
 
     try {
-      const updatedCustomer = await Customer.updateOne({ _id: id }, customer)
+      const updatedAction = await Action.updateOne({ _id: id }, action)
 
-      if (updatedCustomer.matchedCount === 0) {
+      if (updatedAction.matchedCount === 0) {
         return res.status(422).json({ message: 'Cliente não encontrado!' })
       }
 
@@ -67,13 +70,13 @@ class CustomerController {
   public async delete (req: Request, res: Response) {
     const id = req.params.id
     try {
-      const customer = await Customer.findOne({ _id: id })
+      const action = await Action.findOne({ _id: id })
 
-      if (!customer) {
+      if (!action) {
         return res.status(422).json({ message: 'Cliente não encontrado!' })
       }
 
-      await Customer.deleteOne({ _id: id })
+      await Action.deleteOne({ _id: id })
 
       return res.status(200).json({ message: 'Cliente removido com sucesso!' })
     } catch (error) {
@@ -83,4 +86,4 @@ class CustomerController {
   }
 }
 
-export default new CustomerController()
+export default new ActionController()

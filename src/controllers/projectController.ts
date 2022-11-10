@@ -3,7 +3,7 @@ import Project from '@models/Project'
 import { ProjectInterface, ProjectRequest } from '@interfaces/projectInterfaces'
 
 class ProjectController {
-  public async index (req: ProjectRequest, res: Response) {
+  public async list (req: ProjectRequest, res: Response) {
     const userID = req.verifiedUserID as string
     try {
       const projects = await Project.find({ userID }).sort({ title: 'asc' }).collation({

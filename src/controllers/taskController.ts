@@ -3,13 +3,13 @@ import Task from '@models/Task'
 import { TaskInterface, TaskRequest } from '@interfaces/taskInterfaces'
 
 class TaskController {
-  public async get (req: TaskRequest, res: Response) {
+  public async list (req: TaskRequest, res: Response) {
     const projectID = req.params.projectID
     try {
       const tasks = await Task.find({ projectID, parentTaskID: undefined }).sort({ begin: 'asc' }).collation({
         caseLevel: true,
         locale: 'pt'
-      })
+      }).where()
       return res.status(200).json(tasks)
     } catch (error) {
       console.log(error)
@@ -17,7 +17,7 @@ class TaskController {
     }
   }
 
-  public async getWithParent (req: TaskRequest, res: Response) {
+  public async listSubTasks (req: TaskRequest, res: Response) {
     const projectID = req.params.projectID
     const parentTaskID = req.params.parentTaskID
     try {
@@ -32,10 +32,25 @@ class TaskController {
     }
   }
 
-  public async getOne (req: TaskRequest, res: Response) {
+  public async listAllSubTasks (req: TaskRequest, res: Response) {
+    const projectID = req.params.projectID
+    try {
+      const tasks = await Task.find({ projectID, $where: function () { return this.parentTaskID } }).sort({ begin: 'asc' }).collation({
+        caseLevel: true,
+        locale: 'pt'
+      })
+      return res.status(200).json(tasks)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
+  public async get (req: TaskRequest, res: Response) {
     const id = req.params.id
     try {
       const task = await Task.findById(id)
+      console.log(task)
       return res.status(200).json(task)
     } catch (error) {
       console.log(error)

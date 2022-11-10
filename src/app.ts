@@ -56,9 +56,12 @@ class App {
     this.express.use(routes.rootRoute)
     this.express.use('/auth', routes.authRoutes)
     this.express.use('/user', routes.userRoutes)
+    this.express.use('/action', routes.actionRoutes)
     this.express.use('/customer', routes.customerRoutes)
     this.express.use('/project', routes.projectRoutes)
+    this.express.use('/risk', routes.riskRoutes)
     this.express.use('/task', routes.taskRoutes)
+    this.express.use('/riskTask', routes.riskTaskRoutes)
   }
 }
 
