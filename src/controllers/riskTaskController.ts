@@ -14,6 +14,17 @@ class RiskTaskController {
     }
   }
 
+  public async listByTask (req: RiskTaskRequest, res: Response) {
+    const taskID = req.params.taskID
+    try {
+      const riskTasks = await RiskTask.find({ taskID })
+      return res.status(200).json(riskTasks)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
   public async create (req: RiskTaskRequest, res: Response) {
     const { riskID, taskID } = req.body
 

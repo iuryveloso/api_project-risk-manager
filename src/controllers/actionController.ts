@@ -17,6 +17,19 @@ class ActionController {
     }
   }
 
+  public async listAll (req: Request, res: Response) {
+    try {
+      const actions = await Action.find().sort({ firstName: 'asc' }).collation({
+        caseLevel: true,
+        locale: 'pt'
+      })
+      return res.status(200).json(actions)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
   public async create (req: ActionRequest, res: Response) {
     const { title, description, type, responsible, status, observation, riskID } = req.body
 

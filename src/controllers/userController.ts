@@ -9,7 +9,7 @@ class UserController {
   public async get (req: UserRequest, res: Response) {
     const id = req.verifiedUserID
     try {
-      const user = await User.findById(id).select('firstName lastName avatar email -_id')
+      const user = await User.findById(id).select('firstName lastName avatar email occupation company -_id')
       if (!user) {
         return res.status(422).json({ error: 'Usuário não encontrado!' })
       }
@@ -46,13 +46,15 @@ class UserController {
   }
 
   public async update (req: UserRequest, res: Response) {
-    const { email, firstName, lastName } = req.body
+    const { email, firstName, lastName, company, occupation } = req.body
     const id = req.verifiedUserID
 
     const user: UserInterface = {
       email,
       firstName,
-      lastName
+      lastName,
+      company,
+      occupation
     }
 
     try {

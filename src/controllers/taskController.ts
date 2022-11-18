@@ -59,11 +59,12 @@ class TaskController {
   }
 
   public async create (req: TaskRequest, res: Response) {
-    const { begin, description, end, title, parentTaskID, projectID } = req.body
+    const { begin, description, end, title, parentTaskID, projectID, responsible } = req.body
 
     const task = new Task({
       begin,
       description,
+      responsible,
       end,
       title,
       parentTaskID,
@@ -82,11 +83,12 @@ class TaskController {
 
   public async update (req: TaskRequest, res: Response) {
     const id = req.params.id
-    const { begin, description, end, title, parentTaskID, projectID } = req.body
+    const { begin, description, end, title, parentTaskID, projectID, responsible } = req.body
 
     const task: TaskInterface = {
       begin,
       description,
+      responsible,
       end,
       title,
       parentTaskID,

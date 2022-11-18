@@ -29,15 +29,28 @@ class RiskController {
   }
 
   public async create (req: RiskRequest, res: Response) {
-    const { title, description, category, causes, probability, impact, observations, projectID } = req.body
+    const {
+      title,
+      description,
+      category,
+      causes,
+      probabilityPositive,
+      probabilityNegative,
+      impactPositive,
+      impactNegative,
+      observations,
+      projectID
+    } = req.body
 
     const risk = new Risk({
       title,
       description,
       category,
       causes,
-      probability,
-      impact,
+      probabilityPositive,
+      probabilityNegative,
+      impactPositive,
+      impactNegative,
       observations,
       projectID
     })
@@ -52,15 +65,28 @@ class RiskController {
 
   public async update (req: RiskRequest, res: Response) {
     const id = req.params.id
-    const { title, description, category, causes, probability, impact, observations, projectID } = req.body
+    const {
+      title,
+      description,
+      category,
+      causes,
+      probabilityPositive,
+      probabilityNegative,
+      impactPositive,
+      impactNegative,
+      observations,
+      projectID
+    } = req.body
 
     const risk: RiskInterface = {
       title,
       description,
       category,
       causes,
-      probability,
-      impact,
+      probabilityPositive,
+      probabilityNegative,
+      impactPositive,
+      impactNegative,
       observations,
       projectID
     }

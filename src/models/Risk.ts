@@ -5,8 +5,10 @@ const RiskSchema = new Schema({
   description: String,
   category: String,
   causes: String,
-  probability: Number,
-  impact: Number,
+  probabilityPositive: Number,
+  impactPositive: Number,
+  probabilityNegative: Number,
+  impactNegative: Number,
   observations: String,
   projectID: String
 }, {

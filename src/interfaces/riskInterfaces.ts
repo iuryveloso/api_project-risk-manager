@@ -5,9 +5,11 @@ export interface RiskInterface {
     description: string,
     category: string,
     causes: string,
-    probability: number,
-    impact: number,
-    observations: string,
+    probabilityPositive: number
+    impactPositive: number
+    probabilityNegative: number
+    impactNegative: number
+    observations: string
     projectID: string
 }
 

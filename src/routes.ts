@@ -67,6 +67,7 @@ userRoutes.patch('/avatar', [isAuthenticated, upload.single('avatar'), userUpdat
 userRoutes.patch('/password', [isAuthenticated, userUpdatePasswordVerified], userController.updatePassword)
 
 // Action routes
+actionRoutes.get('/', isAuthenticated, actionController.listAll)
 actionRoutes.get('/:riskID', isAuthenticated, actionController.list)
 actionRoutes.post('/', [isAuthenticated, actionCreateVerified], actionController.create)
 actionRoutes.patch('/:id', [isAuthenticated, actionUpdateVerified], actionController.update)
@@ -103,6 +104,7 @@ taskRoutes.delete('/:id', isAuthenticated, taskController.delete)
 
 // RiskTask routes
 riskTaskRoutes.get('/:riskID', isAuthenticated, riskTaskController.list)
+riskTaskRoutes.get('/task/:taskID', isAuthenticated, riskTaskController.listByTask)
 riskTaskRoutes.post('/', isAuthenticated, riskTaskController.create)
 riskTaskRoutes.delete('/:riskID/:taskID', isAuthenticated, riskTaskController.delete)
 

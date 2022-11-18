@@ -29,11 +29,12 @@ class ProjectController {
   }
 
   public async create (req: ProjectRequest, res: Response) {
-    const { begin, description, end, title } = req.body
+    const { begin, description, end, title, occupationArea } = req.body
 
     const project = new Project({
       begin,
       description,
+      occupationArea,
       end,
       title,
       userID: req.verifiedUserID as string
@@ -51,11 +52,12 @@ class ProjectController {
   public async update (req: ProjectRequest, res: Response) {
     const id = req.params.id
     const userID = req.verifiedUserID as string
-    const { begin, description, end, title } = req.body
+    const { begin, description, end, title, occupationArea } = req.body
 
     const project: ProjectInterface = {
       begin,
       description,
+      occupationArea,
       end,
       title,
       userID
