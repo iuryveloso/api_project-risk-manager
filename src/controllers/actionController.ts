@@ -30,6 +30,17 @@ class ActionController {
     }
   }
 
+  public async get (req: Request, res: Response) {
+    const id = req.params.id
+    try {
+      const action = await Action.findById(id)
+      return res.status(200).json(action)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
   public async create (req: ActionRequest, res: Response) {
     const { title, description, type, responsible, status, observation, riskID } = req.body
 

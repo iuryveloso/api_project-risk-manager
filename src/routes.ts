@@ -68,6 +68,7 @@ userRoutes.patch('/password', [isAuthenticated, userUpdatePasswordVerified], use
 
 // Action routes
 actionRoutes.get('/', isAuthenticated, actionController.listAll)
+actionRoutes.get('/get/:id', isAuthenticated, actionController.get)
 actionRoutes.get('/:riskID', isAuthenticated, actionController.list)
 actionRoutes.post('/', [isAuthenticated, actionCreateVerified], actionController.create)
 actionRoutes.patch('/:id', [isAuthenticated, actionUpdateVerified], actionController.update)
