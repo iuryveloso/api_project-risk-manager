@@ -50,7 +50,6 @@ class TaskController {
     const id = req.params.id
     try {
       const task = await Task.findById(id)
-      console.log(task)
       return res.status(200).json(task)
     } catch (error) {
       console.log(error)
