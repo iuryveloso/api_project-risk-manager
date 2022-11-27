@@ -13,10 +13,6 @@ import actionController from '@controllers/actionController'
 import actionCreateVerified from '@middlewares/action/actionCreateVerified'
 import actionUpdateVerified from '@middlewares/action/actionUpdateVerified'
 
-import customerController from '@controllers/customerController'
-import customerCreateVerified from '@middlewares/customer/customerCreateVerified'
-import customerUpdateVerified from '@middlewares/customer/customerUpdateVerified'
-
 import projectController from '@controllers/projectController'
 import projectCreateVerified from '@middlewares/project/projectCreateVerified'
 import projectUpdateVerified from '@middlewares/project/projectUpdateVerified'
@@ -39,7 +35,6 @@ const rootRoute = Router()
 const authRoutes = Router()
 const userRoutes = Router()
 const actionRoutes = Router()
-const customerRoutes = Router()
 const projectRoutes = Router()
 const riskRoutes = Router()
 const taskRoutes = Router()
@@ -74,12 +69,6 @@ actionRoutes.post('/', [isAuthenticated, actionCreateVerified], actionController
 actionRoutes.patch('/:id', [isAuthenticated, actionUpdateVerified], actionController.update)
 actionRoutes.delete('/:id', isAuthenticated, actionController.delete)
 
-// Customer routes
-customerRoutes.get('/', isAuthenticated, customerController.list)
-customerRoutes.post('/', [isAuthenticated, customerCreateVerified], customerController.create)
-customerRoutes.patch('/:id', [isAuthenticated, customerUpdateVerified], customerController.update)
-customerRoutes.delete('/:id', isAuthenticated, customerController.delete)
-
 // Project routes
 projectRoutes.get('/', isAuthenticated, projectController.list)
 projectRoutes.get('/:id', isAuthenticated, projectController.get)
@@ -109,4 +98,4 @@ riskTaskRoutes.get('/task/:taskID', isAuthenticated, riskTaskController.listByTa
 riskTaskRoutes.post('/', isAuthenticated, riskTaskController.create)
 riskTaskRoutes.delete('/:riskID/:taskID', isAuthenticated, riskTaskController.delete)
 
-export default { rootRoute, authRoutes, userRoutes, actionRoutes, customerRoutes, projectRoutes, riskRoutes, taskRoutes, riskTaskRoutes }
+export default { rootRoute, authRoutes, userRoutes, actionRoutes, projectRoutes, riskRoutes, taskRoutes, riskTaskRoutes }
