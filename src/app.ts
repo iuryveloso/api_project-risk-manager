@@ -61,6 +61,7 @@ class App {
     this.express.use('/risk', routes.riskRoutes)
     this.express.use('/task', routes.taskRoutes)
     this.express.use('/riskTask', routes.riskTaskRoutes)
+    this.express.use('/projectUser', routes.projectUserRoutes)
   }
 }
 

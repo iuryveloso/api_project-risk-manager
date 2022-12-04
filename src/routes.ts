@@ -26,6 +26,7 @@ import taskCreateVerified from '@middlewares/task/taskCreateVerified'
 import taskUpdateVerified from '@middlewares/task/taskUpdateVerified'
 
 import riskTaskController from '@controllers/riskTaskController'
+import projectUserController from '@controllers/ProjectUserController'
 
 import isAuthenticated from '@middlewares/isAuthenticated'
 import UploadFile from '@middlewares/uploadFile'
@@ -39,6 +40,7 @@ const projectRoutes = Router()
 const riskRoutes = Router()
 const taskRoutes = Router()
 const riskTaskRoutes = Router()
+const projectUserRoutes = Router()
 
 // Root route
 rootRoute.get('/', (req, res) => res.json({
@@ -55,8 +57,10 @@ authRoutes.get('/google', authController.google)
 authRoutes.get('/logout', isAuthenticated, authController.logout)
 
 // Users routes
-userRoutes.get('/', isAuthenticated, userController.get)
+userRoutes.get('/', isAuthenticated, userController.list)
+userRoutes.get('/get', isAuthenticated, userController.get)
 userRoutes.get('/avatar', isAuthenticated, userController.getAvatar)
+userRoutes.get('/avatar/:avatarName', isAuthenticated, userController.getAvatarByAvatarName)
 userRoutes.patch('/', [isAuthenticated, userUpdateVerified], userController.update)
 userRoutes.patch('/avatar', [isAuthenticated, upload.single('avatar'), userUpdateAvatarVerified], userController.updateAvatar)
 userRoutes.patch('/password', [isAuthenticated, userUpdatePasswordVerified], userController.updatePassword)
@@ -98,4 +102,11 @@ riskTaskRoutes.get('/task/:taskID', isAuthenticated, riskTaskController.listByTa
 riskTaskRoutes.post('/', isAuthenticated, riskTaskController.create)
 riskTaskRoutes.delete('/:riskID/:taskID', isAuthenticated, riskTaskController.delete)
 
-export default { rootRoute, authRoutes, userRoutes, actionRoutes, projectRoutes, riskRoutes, taskRoutes, riskTaskRoutes }
+// ProjectUser routes
+projectUserRoutes.get('/:userID', isAuthenticated, projectUserController.list)
+projectUserRoutes.get('/project/:projectID', isAuthenticated, projectUserController.listByProject)
+projectUserRoutes.get('/get/:userID/:projectID', isAuthenticated, projectUserController.get)
+projectUserRoutes.post('/', isAuthenticated, projectUserController.create)
+projectUserRoutes.delete('/:userID/:projectID', isAuthenticated, projectUserController.delete)
+
+export default { rootRoute, authRoutes, userRoutes, actionRoutes, projectRoutes, riskRoutes, taskRoutes, riskTaskRoutes, projectUserRoutes }

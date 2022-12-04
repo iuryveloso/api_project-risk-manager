@@ -9,7 +9,21 @@ class UserController {
   public async get (req: UserRequest, res: Response) {
     const id = req.verifiedUserID
     try {
-      const user = await User.findById(id).select('firstName lastName avatar email occupation company -_id')
+      const user = await User.findById(id).select('firstName lastName avatar email occupation company')
+      if (!user) {
+        return res.status(422).json({ error: 'Usuário não encontrado!' })
+      }
+
+      return res.status(200).json(user)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
+  public async list (req: UserRequest, res: Response) {
+    try {
+      const user = await User.find().select('firstName lastName avatar email occupation company')
       if (!user) {
         return res.status(422).json({ error: 'Usuário não encontrado!' })
       }
@@ -39,6 +53,24 @@ class UserController {
       } else {
         return res.status(422)
       }
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+    }
+  }
+
+  public async getAvatarByAvatarName (req: UserRequest, res: Response) {
+    const avatarName = req.params.avatarName
+    try {
+      const readStream = fileSystem.createReadStream(`./uploads/${avatarName}`)
+      const passThrough = new PassThrough()
+      pipeline(readStream, passThrough, (error) => {
+        if (error) {
+          console.log(error)
+          return res.status(422)
+        }
+      })
+      passThrough.pipe(res)
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })

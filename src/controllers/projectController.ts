@@ -19,9 +19,14 @@ class ProjectController {
 
   public async get (req: ProjectRequest, res: Response) {
     const id = req.params.id
+    const userID = req.verifiedUserID as string
     try {
-      const projects = await Project.findById(id)
-      return res.status(200).json(projects)
+      const project = await Project.findById(id)
+      if (project?.userID === userID) {
+        return res.status(200).json(project)
+      } else {
+        return res.status(422).json({ message: 'Projeto não encontrado!' })
+      }
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
