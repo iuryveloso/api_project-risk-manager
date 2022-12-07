@@ -63,5 +63,9 @@ export default async function ProjectUpdateVerified (req: ProjectRequest, res: R
     })
   }
 
+  if (begin > end) {
+    return res.status(422).json({ error: 'A Data de Início tem que ser anterior ou igual à data de Término' })
+  }
+
   next()
 }

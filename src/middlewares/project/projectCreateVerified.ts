@@ -20,5 +20,9 @@ export default async function ProjectCreateVerified (req: ProjectRequest, res: R
     return res.status(422).json({ error: 'A Data de Término é obrigatória' })
   }
 
+  if (begin > end) {
+    return res.status(422).json({ error: 'A Data de Início tem que ser anterior ou igual à data de Término' })
+  }
+
   next()
 }
