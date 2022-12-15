@@ -29,7 +29,7 @@ class ProjectUserController {
     const userID = req.params.userID
     const projectID = req.params.projectID
     try {
-      const projectUser = await ProjectUser.find({ userID, projectID })
+      const projectUser = await ProjectUser.findOne({ userID, projectID })
       return res.status(200).json(projectUser)
     } catch (error) {
       console.log(error)

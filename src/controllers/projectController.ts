@@ -4,9 +4,8 @@ import { ProjectInterface, ProjectRequest } from '@interfaces/projectInterfaces'
 
 class ProjectController {
   public async list (req: ProjectRequest, res: Response) {
-    const userID = req.verifiedUserID as string
     try {
-      const projects = await Project.find({ userID }).sort({ title: 'asc' }).collation({
+      const projects = await Project.find().sort({ title: 'asc' }).collation({
         caseLevel: true,
         locale: 'pt'
       })
@@ -19,14 +18,9 @@ class ProjectController {
 
   public async get (req: ProjectRequest, res: Response) {
     const id = req.params.id
-    const userID = req.verifiedUserID as string
     try {
       const project = await Project.findById(id)
-      if (project?.userID === userID) {
-        return res.status(200).json(project)
-      } else {
-        return res.status(422).json({ message: 'Projeto não encontrado!' })
-      }
+      return res.status(200).json(project)
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })

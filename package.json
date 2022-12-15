@@ -11,7 +11,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon --exec babel-node ./src/server.ts --extensions .ts",
-    "start": "node --exec babel-node ./src/server.ts --extensions .ts"
+    "start": "babel-node ./src/server.ts --extensions .ts"
   },
   "babel": {
     "presets": [
