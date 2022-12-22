@@ -18,7 +18,7 @@ Ou, inicie em modo de produção:
 yarn build && yarn start
 ```
 
-A api sera executada em http://localhost:3333.
+A api será executada em http://localhost:3333.
 
 As configuração do sistema devem seu feitas atraves de um arquivo `.env`, que pode ser criado à partir do arquivo `.env example`.
 
