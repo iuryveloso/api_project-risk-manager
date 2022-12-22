@@ -4,7 +4,7 @@ import cors from 'cors'
 import session from 'express-session'
 import CookieParser from 'cookie-parser'
 import routes from '@src/routes'
-import env from '@rootDir/env.config'
+import env from '@src/env.config'
 
 class App {
   public express: express.Application

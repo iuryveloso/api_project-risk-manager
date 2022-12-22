@@ -3,7 +3,7 @@ import { sign } from 'jsonwebtoken'
 import QueryString from 'qs'
 import axios from 'axios'
 import fileSystem from 'fs-extra'
-import env from '@rootDir/env.config'
+import env from '@src/env.config'
 import path from 'path'
 import { randomUUID } from 'crypto'
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { JwtPayload, verify } from 'jsonwebtoken'
-import env from '@rootDir/env.config'
+import env from '@src/env.config'
 
 interface IsAuthenticatedRequest extends Request {
     verifiedUserID?: string

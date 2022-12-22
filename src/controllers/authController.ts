@@ -8,7 +8,7 @@ import {
   saveToken,
   downloadAvatarImageFromGoogle
 } from '@functions/userFunctions'
-import env from '@rootDir/env.config'
+import env from '@src/env.config'
 
 class AuthController {
   public async check (req: UserRequest, res: Response) {
