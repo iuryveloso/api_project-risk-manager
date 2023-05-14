@@ -11,6 +11,7 @@ export default async function RiskUpdateVerified (req: RiskRequest, res: Respons
     probabilityPositive,
     impactNegative,
     impactPositive,
+    status,
     observations
   } = req.body
 
@@ -37,6 +38,9 @@ export default async function RiskUpdateVerified (req: RiskRequest, res: Respons
   }
   if (!impactPositive) {
     return res.status(422).json({ error: 'O impacto Positivo é obrigatório' })
+  }
+  if (!status) {
+    return res.status(422).json({ error: 'O Status é obrigatório' })
   }
   if (!observations) {
     return res.status(422).json({ error: 'As observações são obrigatórias' })

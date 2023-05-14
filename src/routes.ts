@@ -82,6 +82,8 @@ projectRoutes.delete('/:id', isAuthenticated, projectController.delete)
 
 // Risk routes
 riskRoutes.get('/:projectID', isAuthenticated, riskController.list)
+riskRoutes.get('/impacts/:projectID', isAuthenticated, riskController.listHigherImpacts)
+riskRoutes.get('/risks_cost/:projectID', isAuthenticated, riskController.getRisksCost)
 riskRoutes.get('/get/:id', isAuthenticated, riskController.get)
 riskRoutes.post('/', [isAuthenticated, riskCreateVerified], riskController.create)
 riskRoutes.patch('/:id', [isAuthenticated, riskUpdateVerified], riskController.update)

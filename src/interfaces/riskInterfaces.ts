@@ -10,6 +10,7 @@ export interface RiskInterface {
     probabilityNegative: number
     impactNegative: number
     observations: string
+    status: string
     projectID: string
 }
 

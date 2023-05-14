@@ -6,6 +6,7 @@ export interface ActionInterface {
     type: string
     responsible: string
     status: string
+    cost: number
     observation: string
     riskID: string
 }

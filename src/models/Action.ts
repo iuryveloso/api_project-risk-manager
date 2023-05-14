@@ -6,6 +6,7 @@ const ActionSchema = new Schema({
   type: String,
   responsible: String,
   status: String,
+  cost: Number,
   observation: String,
   riskID: String
 }, {

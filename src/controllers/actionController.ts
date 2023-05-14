@@ -42,7 +42,7 @@ class ActionController {
   }
 
   public async create (req: ActionRequest, res: Response) {
-    const { title, description, type, responsible, status, observation, riskID } = req.body
+    const { title, description, type, responsible, status, cost, observation, riskID } = req.body
 
     const action = new Action({
       title,
@@ -50,6 +50,7 @@ class ActionController {
       type,
       responsible,
       status,
+      cost,
       observation,
       riskID
     })
@@ -65,7 +66,7 @@ class ActionController {
 
   public async update (req: ActionRequest, res: Response) {
     const id = req.params.id
-    const { title, description, type, responsible, status, observation, riskID } = req.body
+    const { title, description, type, responsible, status, cost, observation, riskID } = req.body
 
     const action: ActionInterface = {
       title,
@@ -73,6 +74,7 @@ class ActionController {
       type,
       responsible,
       status,
+      cost,
       observation,
       riskID
     }

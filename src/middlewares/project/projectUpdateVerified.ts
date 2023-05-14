@@ -3,7 +3,7 @@ import { ProjectRequest } from '@interfaces/projectInterfaces'
 import Task from '@models/Task'
 
 export default async function ProjectUpdateVerified (req: ProjectRequest, res: Response, next: NextFunction) {
-  const { begin, description, end, title, occupationArea } = req.body
+  const { begin, description, end, title, occupationArea, cost } = req.body
   const id = req.params.id
 
   if (!title) {
@@ -20,6 +20,9 @@ export default async function ProjectUpdateVerified (req: ProjectRequest, res: R
   }
   if (!end) {
     return res.status(422).json({ error: 'A Data de Término é obrigatória' })
+  }
+  if (!cost) {
+    return res.status(422).json({ error: 'O Custo é obrigatório' })
   }
 
   const tasks = await Task.find({ projectID: id, parentTaskID: undefined })

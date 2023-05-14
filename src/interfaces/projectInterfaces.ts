@@ -6,6 +6,7 @@ export interface ProjectInterface {
     occupationArea: string
     begin: string
     end: string
+    cost: number
     userID: string
 }
 

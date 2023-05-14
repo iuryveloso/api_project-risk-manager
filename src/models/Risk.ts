@@ -10,6 +10,7 @@ const RiskSchema = new Schema({
   probabilityNegative: Number,
   impactNegative: Number,
   observations: String,
+  status: String,
   projectID: String
 }, {
   timestamps: true

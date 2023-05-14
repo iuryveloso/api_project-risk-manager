@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express'
 import { ActionRequest } from '@interfaces/actionInterfaces'
 
 export default async function ActionCreateVerified (req: ActionRequest, res: Response, next: NextFunction) {
-  const { title, description, type, responsible, status, observation } = req.body
+  const { title, description, type, responsible, status, cost, observation } = req.body
 
   if (!title) {
     return res.status(422).json({ error: 'O Título é obrigatório' })
@@ -18,6 +18,9 @@ export default async function ActionCreateVerified (req: ActionRequest, res: Res
   }
   if (!status) {
     return res.status(422).json({ error: 'O Status é obrigatório' })
+  }
+  if (!cost) {
+    return res.status(422).json({ error: 'O Custo é obrigatório' })
   }
   if (!observation) {
     return res.status(422).json({ error: 'A observação é obrigatória' })

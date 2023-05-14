@@ -6,6 +6,7 @@ const ProjectSchema = new Schema({
   occupationArea: String,
   begin: String,
   end: String,
+  cost: Number,
   userID: String
 }, {
   timestamps: true
