@@ -158,6 +158,9 @@ class RiskController {
       if (!risk) {
         return res.status(422).json({ message: 'Risco não encontrado!' })
       }
+      if (risk.status === 'Aprovado') {
+        return res.status(422).json({ error: 'Risco com Status Aprovado não pode ser excluído!' })
+      }
 
       await Risk.deleteOne({ _id: id })
 

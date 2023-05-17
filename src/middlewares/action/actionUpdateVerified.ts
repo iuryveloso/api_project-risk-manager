@@ -19,7 +19,7 @@ export default async function ActionUpdateVerified (req: ActionRequest, res: Res
   if (!status) {
     return res.status(422).json({ error: 'O Status é obrigatório' })
   }
-  if (!cost) {
+  if (cost < 0) {
     return res.status(422).json({ error: 'O Custo é obrigatório' })
   }
   if (!observation) {

@@ -27,16 +27,16 @@ export default async function RiskCreateVerified (req: RiskRequest, res: Respons
   if (!causes) {
     return res.status(422).json({ error: 'As Causas são obrigatórias' })
   }
-  if (!probabilityNegative) {
+  if (probabilityNegative < 0) {
     return res.status(422).json({ error: 'A Probabilidade Negativa é obrigatória' })
   }
-  if (!probabilityPositive) {
+  if (probabilityPositive < 0) {
     return res.status(422).json({ error: 'A Probabilidade Positiva é obrigatória' })
   }
-  if (!impactNegative) {
+  if (impactNegative < 0) {
     return res.status(422).json({ error: 'O impacto Negativo é obrigatório' })
   }
-  if (!impactPositive) {
+  if (impactPositive < 0) {
     return res.status(422).json({ error: 'O impacto Positivo é obrigatório' })
   }
   if (!status) {

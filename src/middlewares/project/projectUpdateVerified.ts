@@ -21,7 +21,7 @@ export default async function ProjectUpdateVerified (req: ProjectRequest, res: R
   if (!end) {
     return res.status(422).json({ error: 'A Data de Término é obrigatória' })
   }
-  if (!cost) {
+  if (cost < 0) {
     return res.status(422).json({ error: 'O Custo é obrigatório' })
   }
 
