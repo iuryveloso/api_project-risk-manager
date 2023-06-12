@@ -14,5 +14,7 @@ export default {
   date: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
   googleClientId: process.env.OAUTH_GOOGLE_CLIENT_ID as string,
   googleClientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET_KEY as string,
-  googleRedirectUri: process.env.OAUTH_GOOGLE_REDIRECT_URL as string
+  googleRedirectUri: process.env.OAUTH_GOOGLE_REDIRECT_URL as string,
+  emailUser: process.env.EMAIL_USER as string,
+  emailPass: process.env.EMAIL_PASS as string
 }

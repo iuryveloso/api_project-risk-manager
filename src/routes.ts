@@ -3,6 +3,7 @@ import { Router } from 'express'
 import authController from '@controllers/authController'
 import authCreateVerified from '@middlewares/auth/authCreateVerified'
 import authLoginVerified from '@middlewares/auth/authLoginVerified'
+import authUpdatePasswordVerified from '@middlewares/auth/authUpdatePasswordVerified'
 
 import userController from '@controllers/userController'
 import userUpdateVerified from '@middlewares/user/userUpdateVerified'
@@ -54,6 +55,8 @@ authRoutes.get('/check', isAuthenticated, authController.check)
 authRoutes.post('/', [upload.single('avatar'), authCreateVerified], authController.create)
 authRoutes.post('/login', authLoginVerified, authController.login)
 authRoutes.get('/google', authController.google)
+authRoutes.post('/sendEmail', authController.sendEmail)
+authRoutes.patch('/password', authUpdatePasswordVerified, authController.updatePassword)
 authRoutes.get('/logout', isAuthenticated, authController.logout)
 
 // Users routes

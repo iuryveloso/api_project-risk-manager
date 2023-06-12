@@ -1,7 +1,8 @@
-import { Response } from 'express'
+import { Request, Response } from 'express'
 import { genSalt, hash } from 'bcrypt'
+import { createTransport } from 'nodemailer'
 import User from '@models/User'
-import { UserRequest } from '@interfaces/userInterfaces'
+import { UserInterface, UserRequest } from '@interfaces/userInterfaces'
 import {
   getGoogleOAuthTokens,
   getGoogleUser,
@@ -9,6 +10,10 @@ import {
   downloadAvatarImageFromGoogle
 } from '@functions/userFunctions'
 import env from '@src/env.config'
+
+interface EmailRequest extends Request {
+  body: {receiver: string, token: string}
+}
 
 class AuthController {
   public async check (req: UserRequest, res: Response) {
@@ -97,6 +102,57 @@ class AuthController {
       }
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  public async sendEmail (req: EmailRequest, res: Response) {
+    const { receiver, token } = req.body
+    const transporter = createTransport({
+      service: 'gmail',
+      auth: {
+        user: env.emailUser,
+        pass: env.emailPass
+      }
+    })
+    transporter.sendMail({
+      from: 'Gerencidor de Riscos de Projetos <gerenciador.riscos@gmail.com>',
+      to: receiver,
+      subject: 'Recuperar Senha',
+      html: `<p>Seu token de recuperação de senha é: <strong>${token}</strong></p>`
+    })
+      .then((resp) => {
+        console.log('Email enviado!')
+        return res.status(200).json({ message: resp })
+      })
+      .catch((err) => {
+        console.log(err)
+        return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
+      })
+  }
+
+  public async updatePassword (req: UserRequest, res: Response) {
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
+    const salt = await genSalt(12)
+
+    const passwordHash = await hash(password as string, salt)
+
+    const userWithNewPassword: UserInterface = {
+      password: passwordHash
+    }
+    try {
+      const updatedUser = await User.updateOne({ _id: user?._id }, userWithNewPassword)
+
+      if (updatedUser.matchedCount === 0) {
+        return res.status(422).json({ error: 'Usuário não encontrado!' })
+      }
+
+      saveToken(user?._id.toString() as string, res)
+
+      return res.status(201).json({ message: 'Usuário atualizado com sucesso!' })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
     }
   }
 
