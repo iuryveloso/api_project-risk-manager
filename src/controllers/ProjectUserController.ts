@@ -47,7 +47,7 @@ class ProjectUserController {
     })
     try {
       await ProjectUser.create(projectUser)
-      return res.status(201).json({ message: 'Tarefa adicionada com sucesso!' })
+      return res.status(201).json({ message: 'Projeto cadastrado com sucesso!' })
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })
@@ -66,7 +66,7 @@ class ProjectUserController {
 
       await ProjectUser.deleteMany({ projectID, userID })
 
-      return res.status(200).json({ message: 'Tarefa removida com sucesso!' })
+      return res.status(200).json({ message: 'Projeto removido com sucesso!' })
     } catch (error) {
       console.log(error)
       return res.status(500).json({ message: 'Aconteceu algum erro, tente novamente mais tarde!' })

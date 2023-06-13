@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import Project from '@models/Project'
 import { ProjectInterface, ProjectRequest } from '@interfaces/projectInterfaces'
+import ProjectUser from '@models/ProjectUser'
 
 class ProjectController {
   public async list (req: ProjectRequest, res: Response) {
@@ -29,7 +30,7 @@ class ProjectController {
 
   public async create (req: ProjectRequest, res: Response) {
     const { begin, description, end, title, occupationArea, cost } = req.body
-
+    const id = req.verifiedUserID as string
     const project = new Project({
       begin,
       description,
@@ -37,11 +38,18 @@ class ProjectController {
       end,
       title,
       cost,
-      userID: req.verifiedUserID as string
+      userID: id
+    })
+
+    const projectUser = new ProjectUser({
+      userID: id,
+      projectID: project._id,
+      functionProject: 'manager'
     })
 
     try {
       await Project.create(project)
+      await ProjectUser.create(projectUser)
       return res.status(201).json({ message: 'Projeto cadastrado com sucesso!' })
     } catch (error) {
       console.log(error)
@@ -88,6 +96,7 @@ class ProjectController {
       }
 
       await Project.deleteOne({ _id: id })
+      await ProjectUser.deleteMany({ projectID: id })
 
       return res.status(200).json({ message: 'Projeto removido com sucesso!' })
     } catch (error) {
